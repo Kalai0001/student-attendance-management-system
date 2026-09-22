@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In &bull; EduTrack Attendance Management System</title>
+    
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    
+    <!-- Custom Theme CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page-body">
+
+<div class="login-portal-card">
+    <div class="row g-0">
+        
+        <!-- Left Side: Enterprise Branding & System Illustration -->
+        <div class="col-lg-5 login-brand-panel">
+            <!-- Brand Header -->
+            <div class="brand-badge-wrapper">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="brand-emblem">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <div>
+                        <h1 class="brand-title">
+                            EduTrack
+                            <span class="brand-tag">Enterprise</span>
+                        </h1>
+                        <p class="brand-subtitle mb-0">Student Attendance Management System</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Showcase Illustration Card: Real-time Attendance Telemetry -->
+            <div class="brand-showcase-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-white-50 small fw-medium">Live Academic Session</span>
+                    <span class="showcase-stat-pill">
+                        <i class="bi bi-broadcast"></i> Active Portal
+                    </span>
+                </div>
+                
+                <div class="d-flex align-items-baseline justify-content-between">
+                    <div>
+                        <div class="showcase-metric-value">98.4%</div>
+                        <div class="text-white-50 small">Average Institutional Attendance</div>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1 small">
+                            <i class="bi bi-arrow-up-short"></i> +2.4% Optimal
+                        </span>
+                    </div>
+                </div>
+
+                <div class="showcase-progress-bar">
+                    <div class="showcase-progress-fill"></div>
+                </div>
+
+                <!-- Live Indicators Grid -->
+                <div class="row g-2 mt-2 pt-2 border-top border-white border-opacity-10 text-white-50 small">
+                    <div class="col-6 d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-check text-info"></i>
+                        <span>Audit Verifiable</span>
+                    </div>
+                    <div class="col-6 d-flex align-items-center gap-2">
+                        <i class="bi bi-person-check-fill text-success"></i>
+                        <span>Live Roll-Call</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Enterprise Capabilities -->
+            <div class="brand-feature-list">
+                <div class="brand-feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-calendar2-check"></i>
+                    </div>
+                    <div>
+                        <div class="feature-text-title">Daily Roll-Call & Subject Tracking</div>
+                        <p class="feature-text-desc">Instant recording, section grouping, and automatic status calculations.</p>
+                    </div>
+                </div>
+
+                <div class="brand-feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-exclamation-octagon"></i>
+                    </div>
+                    <div>
+                        <div class="feature-text-title">Eligibility & Threshold Alerts</div>
+                        <p class="feature-text-desc">Immediate flagging for attendance below the mandatory 75% academic requirement.</p>
+                    </div>
+                </div>
+
+                <div class="brand-feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-lock-fill"></i>
+                    </div>
+                    <div>
+                        <div class="feature-text-title">Role-Based Access Governance</div>
+                        <p class="feature-text-desc">Segregated administrative faculty controls and personalized student views.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Trust Footnote -->
+            <div class="brand-trust-footer">
+                <div class="brand-trust-item">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span>256-Bit SSL Encrypted</span>
+                </div>
+                <span class="text-white-50">&bull;</span>
+                <div class="brand-trust-item">
+                    <i class="bi bi-patch-check-fill"></i>
+                    <span>Accredited Portal</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form Panel -->
+        <div class="col-lg-7 login-form-panel">
+            <div>
+                <!-- Institutional Access Tag -->
+                <div class="portal-badge">
+                    <i class="bi bi-building-check"></i> Institutional Access Portal
+                </div>
+
+                <h2 class="portal-heading">Sign In to Your Account</h2>
+                <p class="portal-subheading">Enter your institutional ID and password to access your administrative or student workspace.</p>
+
+                <!-- Feedback Notifications -->
+                <div th:if="${errorMessage}" class="portal-alert portal-alert-danger" role="alert">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span th:text="${errorMessage}">Invalid credentials. Please verify and try again.</span>
+                </div>
+
+                <div th:if="${successMessage}" class="portal-alert portal-alert-success" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span th:text="${successMessage}">You have been signed out successfully.</span>
+                </div>
+
+                <!-- Authentication Form -->
+                <form th:action="@{/login}" method="post" id="loginForm" novalidate>
+                    <!-- Username or Institutional ID Field -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label field-label">USERNAME / INSTITUTIONAL ID</label>
+                        <div class="portal-input-group">
+                            <span class="field-icon">
+                                <i class="bi bi-person"></i>
+                            </span>
+                            <input type="text" 
+                                   class="form-control form-control-portal" 
+                                   id="username" 
+                                   name="username" 
+                                   placeholder="Enter your username or student ID" 
+                                   required 
+                                   autofocus 
+                                   autocomplete="username">
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="password" class="form-label field-label mb-0">PASSWORD</label>
+                            <a href="javascript:void(0)" class="portal-link-subtle" data-bs-toggle="modal" data-bs-target="#credentialHelpModal">
+                                Forgot password?
+                            </a>
+                        </div>
+                        <div class="portal-input-group">
+                            <span class="field-icon">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input type="password" 
+                                   class="form-control form-control-portal has-toggle" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Enter your password" 
+                                   required 
+                                   autocomplete="current-password">
+                            <button type="button" 
+                                    class="btn-password-toggle" 
+                                    id="togglePasswordBtn" 
+                                    title="Show/Hide Password"
+                                    aria-label="Toggle password visibility">
+                                <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Terminal Option -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 pt-1">
+                        <div class="form-check mb-0">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label text-muted small" for="rememberMe">
+                                Keep me signed in on this workstation
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sign In Action Button -->
+                    <button type="submit" class="btn-portal-primary" id="btnSignIn">
+                        <span>Sign In to Portal</span>
+                        <i class="bi bi-arrow-right-circle-fill"></i>
+                    </button>
+
+                    <!-- Student Registration Prompt -->
+                    <div class="text-center mt-3 pt-1">
+                        <span class="text-muted small">Don't have an account? </span>
+                        <a th:href="@{/register}" class="portal-link-subtle fw-semibold">Sign Up</a>
+                    </div>
+                </form>
+
+                <!-- Institutional Help & Governance Note -->
+                <div class="portal-security-note">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>
+                        For authentication inquiries or account assistance, please reach out to your <strong>Campus IT Helpdesk</strong> or Department Coordinator.
+                    </div>
+                </div>
+
+                <!-- Footer Notice -->
+                <div class="text-center text-muted small mt-4 pt-2">
+                    &copy; 2026 EduTrack Academic Information Systems &bull; All rights reserved.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Institutional Credential Assistance Modal -->
+<div class="modal fade portal-modal" id="credentialHelpModal" tabindex="-1" aria-labelledby="credentialHelpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="credentialHelpModalLabel">
+                    <i class="bi bi-question-circle text-primary"></i> Access Assistance
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">
+                    Your EduTrack credentials are authenticated against the central university directory.
+                </p>
+                <div class="bg-light p-3 rounded-3 mb-3 border">
+                    <h6 class="fw-bold mb-2 small text-uppercase text-secondary">Account Types:</h6>
+                    <ul class="mb-0 small ps-3">
+                        <li class="mb-1"><strong>Faculty & Administrators:</strong> Use your assigned institutional staff username.</li>
+                        <li><strong>Students:</strong> Sign in with your assigned Student ID / Registration number.</li>
+                    </ul>
+                </div>
+                <p class="small text-muted mb-0">
+                    If you cannot access your account or require a password reset, please contact the Registrar Office or IT Administrator.
+                </p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Inline Script for Password Visibility Toggle -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.getElementById("togglePasswordBtn");
+        const passwordInput = document.getElementById("password");
+        const toggleIcon = document.getElementById("togglePasswordIcon");
+
+        if (toggleBtn && passwordInput && toggleIcon) {
+            toggleBtn.addEventListener("click", function () {
+                const isPassword = passwordInput.type === "password";
+                passwordInput.type = isPassword ? "text" : "password";
+                
+                if (isPassword) {
+                    toggleIcon.classList.remove("bi-eye");
+                    toggleIcon.classList.add("bi-eye-slash");
+                    toggleIcon.classList.add("text-primary");
+                    toggleBtn.setAttribute("title", "Hide Password");
+                } else {
+                    toggleIcon.classList.remove("bi-eye-slash");
+                    toggleIcon.classList.remove("text-primary");
+                    toggleIcon.classList.add("bi-eye");
+                    toggleBtn.setAttribute("title", "Show Password");
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

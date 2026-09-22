@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration &bull; EduTrack Attendance Management</title>
+    
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    
+    <!-- Custom Theme CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page-body">
+
+<div class="login-portal-card" style="max-width: 1100px;">
+    <div class="row g-0">
+        
+        <!-- Left Side: EduTrack System Branding & Registration Notice -->
+        <div class="col-lg-5 login-brand-panel">
+            <!-- Brand Header -->
+            <div class="brand-badge-wrapper">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="brand-emblem">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <div>
+                        <h1 class="brand-title">
+                            EduTrack
+                            <span class="brand-tag">Student Enrollment</span>
+                        </h1>
+                        <p class="brand-subtitle mb-0">Student Attendance Management System</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment Notice Card -->
+            <div class="brand-showcase-card my-4">
+                <div class="d-flex align-items-center gap-2 mb-2 text-warning">
+                    <i class="bi bi-shield-exclamation fs-5"></i>
+                    <span class="fw-semibold text-white">Institutional Approval Policy</span>
+                </div>
+                <p class="small text-white-50 mb-2">
+                    All new student registrations are created in a <strong>PENDING</strong> status. An administrator or department coordinator must verify and approve your registration before you can log in.
+                </p>
+                <div class="d-flex align-items-center gap-2 pt-2 border-top border-white border-opacity-10 text-white-50 small">
+                    <i class="bi bi-patch-check-fill text-info"></i>
+                    <span>Verified Academic Profiles</span>
+                </div>
+            </div>
+
+            <!-- Steps Overview -->
+            <div class="brand-feature-list">
+                <div class="brand-feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-1-circle-fill"></i>
+                    </div>
+                    <div>
+                        <div class="feature-text-title">Submit Registration</div>
+                        <p class="feature-text-desc">Provide your official Student ID, institutional email, and select credentials.</p>
+                    </div>
+                </div>
+
+                <div class="brand-feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-2-circle-fill"></i>
+                    </div>
+                    <div>
+                        <div class="feature-text-title">Administrative Verification</div>
+                        <p class="feature-text-desc">Faculty administration confirms your roll record and activates access.</p>
+                    </div>
+                </div>
+
+                <div class="brand-feature-item">
+                    <div class="feature-icon-box">
+                        <i class="bi bi-3-circle-fill"></i>
+                    </div>
+                    <div>
+                        <div class="feature-text-title">Real-Time Attendance Access</div>
+                        <p class="feature-text-desc">Track class presence, subject percentages, and academic alerts.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Note -->
+            <div class="brand-trust-footer mt-4">
+                <div class="brand-trust-item">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span>256-Bit SSL Encrypted</span>
+                </div>
+                <span class="text-white-50">&bull;</span>
+                <div class="brand-trust-item">
+                    <i class="bi bi-person-badge-fill"></i>
+                    <span>Official Campus Directory</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Registration Form -->
+        <div class="col-lg-7 login-form-panel py-4 px-4 px-md-5">
+            <div>
+                <!-- Institutional Badge -->
+                <div class="portal-badge">
+                    <i class="bi bi-person-plus-fill"></i> Student Account Registration
+                </div>
+
+                <h2 class="portal-heading">Create Your Student Account</h2>
+                <p class="portal-subheading mb-3">Register your details below. Once approved by the administrator, you can access your portal.</p>
+
+                <!-- Feedback / Error Alert -->
+                <div th:if="${errorMessage}" class="portal-alert portal-alert-danger" role="alert">
+                    <i class="bi bi-exclamation-circle-fill flex-shrink-0"></i>
+                    <span th:text="${errorMessage}">Registration error occurred.</span>
+                </div>
+
+                <!-- Registration Form -->
+                <form th:action="@{/register}" th:object="${registrationDto}" method="post" id="registrationForm" novalidate>
+                    
+                    <div class="row g-3">
+                        <!-- Student ID (Register Number) -->
+                        <div class="col-md-6">
+                            <label for="registerNumber" class="form-label field-label">STUDENT ID / REG NO <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-card-text"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control form-control-portal" 
+                                       id="registerNumber" 
+                                       th:field="*{registerNumber}" 
+                                       placeholder="e.g. REG2024CS010" 
+                                       required 
+                                       autofocus>
+                            </div>
+                            <div th:if="${#fields.hasErrors('registerNumber')}" class="text-danger small mt-1" th:errors="*{registerNumber}"></div>
+                        </div>
+
+                        <!-- Full Name -->
+                        <div class="col-md-6">
+                            <label for="name" class="form-label field-label">FULL NAME <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control form-control-portal" 
+                                       id="name" 
+                                       th:field="*{name}" 
+                                       placeholder="e.g. Priya Sharma" 
+                                       required>
+                            </div>
+                            <div th:if="${#fields.hasErrors('name')}" class="text-danger small mt-1" th:errors="*{name}"></div>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="col-md-6">
+                            <label for="email" class="form-label field-label">EMAIL ADDRESS <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                <input type="email" 
+                                       class="form-control form-control-portal" 
+                                       id="email" 
+                                       th:field="*{email}" 
+                                       placeholder="e.g. priya@example.com" 
+                                       required>
+                            </div>
+                            <div th:if="${#fields.hasErrors('email')}" class="text-danger small mt-1" th:errors="*{email}"></div>
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label field-label">PHONE NUMBER <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                                <input type="tel" 
+                                       class="form-control form-control-portal" 
+                                       id="phone" 
+                                       th:field="*{phone}" 
+                                       placeholder="e.g. 9876543210" 
+                                       required>
+                            </div>
+                            <div th:if="${#fields.hasErrors('phone')}" class="text-danger small mt-1" th:errors="*{phone}"></div>
+                        </div>
+
+                        <!-- Department -->
+                        <div class="col-md-6">
+                            <label for="department" class="form-label field-label">DEPARTMENT <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-building"></i>
+                                </span>
+                                <select class="form-control form-control-portal form-select" 
+                                       id="department" 
+                                       th:field="*{department}" 
+                                       required style="appearance: auto; padding-left: 2.5rem;">
+                                    <option value="">Select Department</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Mechanical">Mechanical</option>
+                                    <option value="Civil">Civil</option>
+                                    <option value="Electrical">Electrical</option>
+                                </select>
+                            </div>
+                            <div th:if="${#fields.hasErrors('department')}" class="text-danger small mt-1" th:errors="*{department}"></div>
+                        </div>
+
+                        <!-- Year -->
+                        <div class="col-md-6">
+                            <label for="year" class="form-label field-label">YEAR <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-calendar"></i>
+                                </span>
+                                <select class="form-control form-control-portal form-select" 
+                                       id="year" 
+                                       th:field="*{year}" 
+                                       required style="appearance: auto; padding-left: 2.5rem;">
+                                    <option value="">Select Year</option>
+                                    <option value="1">1st Year</option>
+                                    <option value="2">2nd Year</option>
+                                    <option value="3">3rd Year</option>
+                                    <option value="4">4th Year</option>
+                                </select>
+                            </div>
+                            <div th:if="${#fields.hasErrors('year')}" class="text-danger small mt-1" th:errors="*{year}"></div>
+                        </div>
+
+                        <!-- Username -->
+                        <div class="col-md-6">
+                            <label for="username" class="form-label field-label">PORTAL USERNAME <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-person-badge"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control form-control-portal" 
+                                       id="username" 
+                                       th:field="*{username}" 
+                                       placeholder="Choose a username" 
+                                       required 
+                                       autocomplete="username">
+                            </div>
+                            <div th:if="${#fields.hasErrors('username')}" class="text-danger small mt-1" th:errors="*{username}"></div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="col-md-6">
+                            <label for="password" class="form-label field-label">PASSWORD <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+                                <input type="password" 
+                                       class="form-control form-control-portal has-toggle" 
+                                       id="password" 
+                                       th:field="*{password}" 
+                                       placeholder="At least 6 characters" 
+                                       required 
+                                       autocomplete="new-password">
+                                <button type="button" 
+                                        class="btn-password-toggle" 
+                                        id="toggleRegPasswordBtn" 
+                                        title="Show/Hide Password"
+                                        aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye" id="toggleRegPasswordIcon"></i>
+                                </button>
+                            </div>
+                            <div th:if="${#fields.hasErrors('password')}" class="text-danger small mt-1" th:errors="*{password}"></div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="col-md-6">
+                            <label for="confirmPassword" class="form-label field-label">CONFIRM PASSWORD <span class="text-danger">*</span></label>
+                            <div class="portal-input-group">
+                                <span class="field-icon">
+                                    <i class="bi bi-lock-fill"></i>
+                                </span>
+                                <input type="password" 
+                                       class="form-control form-control-portal has-toggle" 
+                                       id="confirmPassword" 
+                                       th:field="*{confirmPassword}" 
+                                       placeholder="Re-enter password" 
+                                       required 
+                                       autocomplete="new-password">
+                                <button type="button" 
+                                        class="btn-password-toggle" 
+                                        id="toggleConfirmPasswordBtn" 
+                                        title="Show/Hide Password"
+                                        aria-label="Toggle confirm password visibility">
+                                    <i class="bi bi-eye" id="toggleConfirmPasswordIcon"></i>
+                                </button>
+                            </div>
+                            <div th:if="${#fields.hasErrors('confirmPassword')}" class="text-danger small mt-1" th:errors="*{confirmPassword}"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Approval Notice -->
+                    <div class="portal-security-note mt-3 mb-4">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <div>
+                            Upon submission, your account will be marked as <strong>PENDING</strong> and must be approved by the college administrator before you can sign in.
+                        </div>
+                    </div>
+
+                    <!-- Create Account Action Button -->
+                    <button type="submit" class="btn-portal-primary" id="btnCreateAccount">
+                        <span>Create Account</span>
+                        <i class="bi bi-check-circle-fill"></i>
+                    </button>
+
+                    <!-- Back to Login Option -->
+                    <div class="text-center mt-3 pt-1">
+                        <span class="text-muted small">Already have an account? </span>
+                        <a th:href="@{/login}" class="portal-link-subtle fw-semibold">Sign In</a>
+                    </div>
+                </form>
+
+                <!-- Footer -->
+                <div class="text-center text-muted small mt-4 pt-1">
+                    &copy; 2026 EduTrack Academic Information Systems &bull; All rights reserved.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Bootstrap 5 Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Inline Password Toggles Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function setupToggle(btnId, inputId, iconId) {
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (btn && input && icon) {
+                btn.addEventListener("click", function () {
+                    const isPassword = input.type === "password";
+                    input.type = isPassword ? "text" : "password";
+                    if (isPassword) {
+                        icon.classList.remove("bi-eye");
+                        icon.classList.add("bi-eye-slash");
+                        icon.classList.add("text-primary");
+                    } else {
+                        icon.classList.remove("bi-eye-slash");
+                        icon.classList.remove("text-primary");
+                        icon.classList.add("bi-eye");
+                    }
+                });
+            }
+        }
+
+        setupToggle("toggleRegPasswordBtn", "password", "toggleRegPasswordIcon");
+        setupToggle("toggleConfirmPasswordBtn", "confirmPassword", "toggleConfirmPasswordIcon");
+    });
+</script>
+
+</body>
+</html>

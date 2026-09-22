@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="EduTrack – Student Profile"/>
+    <title>My Profile – EduTrack Student</title>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon"/>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+    <!-- Global CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+
+    <style>
+        :root {
+            --edutrack-navy: #0b1528;
+            --edutrack-navy-light: #112038;
+            --edutrack-navy-border: rgba(255, 255, 255, 0.08);
+            --edutrack-blue: #2563eb;
+            --edutrack-blue-hover: #1d4ed8;
+            --edutrack-bg: #f8fafc;
+            --edutrack-card-border: #e2e8f0;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--edutrack-bg);
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ── Dark Navy Sidebar ── */
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #091322 0%, #0d1b32 60%, #0f1f3a 100%);
+            color: #cbd5e1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--edutrack-navy-border);
+            box-shadow: 4px 0 24px rgba(6, 12, 22, 0.25);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .admin-sidebar-brand {
+            padding: 1.5rem 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            border-bottom: 1px solid var(--edutrack-navy-border);
+        }
+
+        .brand-icon-wrapper {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.35rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            flex-shrink: 0;
+        }
+
+        .brand-text-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-size: 1.22rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: #ffffff;
+            line-height: 1.15;
+        }
+
+        .brand-subtitle {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: #94a3b8;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .admin-sidebar-nav {
+            flex: 1;
+            padding: 1.25rem 0.85rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.75rem 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.18s ease;
+            position: relative;
+        }
+
+        .admin-nav-item i {
+            font-size: 1.15rem;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+            color: #64748b;
+        }
+
+        .admin-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #f1f5f9;
+            text-decoration: none;
+        }
+
+        .admin-nav-item:hover i {
+            color: #93c5fd;
+        }
+
+        .admin-nav-item.active {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.28) 0%, rgba(37, 99, 235, 0.12) 100%);
+            color: #ffffff;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.28);
+        }
+
+        .admin-nav-item.active i {
+            color: #60a5fa;
+        }
+
+        .admin-nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 25%;
+            bottom: 25%;
+            width: 3.5px;
+            background: #3b82f6;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .admin-sidebar-footer {
+            padding: 1rem 0.85rem 1.25rem;
+            border-top: 1px solid var(--edutrack-navy-border);
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        .admin-sidebar-user-box {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            margin-bottom: 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .user-avatar-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .admin-btn-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            color: #94a3b8;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .admin-btn-logout:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+
+        .admin-content-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--edutrack-bg);
+            transition: margin-left 0.25s ease;
+        }
+
+        .admin-topbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--edutrack-card-border);
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .sidebar-toggle-btn {
+            display: none;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        .topbar-page-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .topbar-clock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .admin-main-content {
+            padding: 1.75rem 2rem 2.5rem;
+            flex: 1;
+        }
+
+        /* ── Welcome Section ── */
+        .admin-welcome-card {
+            background: #ffffff;
+            border: 1px solid var(--edutrack-card-border);
+            border-radius: 16px;
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 1.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-welcome-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #2563eb 0%, #3b82f6 100%);
+            border-radius: 16px 0 0 16px;
+        }
+
+        .welcome-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 0.3rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-desc {
+            font-size: 0.88rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border: 1px solid var(--edutrack-card-border);
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .content-card-header {
+            padding: 1.15rem 1.4rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .content-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin: 0;
+        }
+
+        .content-card-title i {
+            color: #2563eb;
+        }
+
+        .modern-table {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.855rem;
+        }
+
+        .modern-table thead th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.85rem 1.15rem;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .modern-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .modern-table tbody td {
+            padding: 0.85rem 1.15rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 1035;
+        }
+
+        @media (max-width: 991.98px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+            .admin-sidebar.sidebar-open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+            .admin-content-wrapper {
+                margin-left: 0;
+            }
+            .sidebar-toggle-btn {
+                display: inline-flex;
+            }
+            .admin-topbar {
+                padding: 0.85rem 1.25rem;
+            }
+            .admin-main-content {
+                padding: 1.25rem 1.25rem 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Mobile Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-layout">
+
+    <!-- ── Dark Navy Left Sidebar ── -->
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Student Navigation">
+        <!-- Brand -->
+        <a class="admin-sidebar-brand" th:href="@{/student/dashboard}">
+            <div class="brand-icon-wrapper">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <div class="brand-text-wrapper">
+                <span class="brand-title">EduTrack</span>
+                <span class="brand-subtitle">Student Portal</span>
+            </div>
+        </a>
+
+        <!-- Student Navigation Links -->
+        <nav class="admin-sidebar-nav" aria-label="Student Navigation Links">
+            <a class="admin-nav-item" th:href="@{/student/dashboard}" id="nav-dashboard">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <a class="admin-nav-item" th:href="@{/student/attendance}" id="nav-attendance">
+                <i class="bi bi-calendar-check-fill"></i>
+                <span>My Attendance</span>
+            </a>
+            <a class="admin-nav-item active" th:href="@{/student/profile}" id="nav-profile">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>My Profile</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="admin-sidebar-footer">
+            <div class="admin-sidebar-user-box">
+                <div class="user-avatar-circle">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div style="min-width:0; flex:1;">
+                    <div style="font-size:0.85rem; font-weight:600; color:#f1f5f9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" 
+                         th:text="${student.name}">Student Name</div>
+                    <div style="font-size:0.72rem; color:#94a3b8;" th:text="${student.registerNumber}">REG001</div>
+                </div>
+            </div>
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="admin-btn-logout" id="btn-sidebar-signout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sign Out</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- ── Content Wrapper ── -->
+    <div class="admin-content-wrapper">
+
+        <!-- Top Bar -->
+        <header class="admin-topbar">
+            <div class="d-flex align-items-center gap-2">
+                <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Toggle navigation menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="topbar-page-title">
+                    <i class="bi bi-person-badge-fill text-primary"></i>
+                    <span>My Profile</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="topbar-clock-badge">
+                    <i class="bi bi-clock"></i>
+                    <span id="liveClockDisplay">--:--</span>
+                </div>
+                <a th:href="@{/student/dashboard}" class="btn btn-outline-primary btn-sm px-3 rounded-3" style="font-weight:600;">
+                    <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main-content">
+
+            <!-- Flash Alerts -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show d-flex align-items-center mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <div th:text="${successMessage}">Operation successful.</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- ── Profile Welcome Section ── -->
+            <section class="admin-welcome-card" aria-label="Student Profile Banner">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm" 
+                         style="width: 64px; height: 64px; font-size: 2rem;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div>
+                        <h1 class="welcome-title" th:text="${student.name}">Student Name</h1>
+                        <p class="welcome-desc">
+                            Register Number: <strong class="text-dark font-monospace" th:text="${student.registerNumber}">REG001</strong> &bull; 
+                            <span th:text="${student.department}">Department</span> &bull; 
+                            <span th:text="'Year ' + ${student.year}">Year 1</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="d-none d-md-flex align-items-center gap-2">
+                    <span class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Account Active
+                    </span>
+                </div>
+            </section>
+
+            <!-- ── Profile Content Sections ── -->
+            <div class="row g-4 align-items-stretch">
+                
+                <!-- Left Section: Academic & Contact Details -->
+                <div class="col-lg-7">
+                    <div class="content-card">
+                        <div class="content-card-header">
+                            <h3 class="content-card-title">
+                                <i class="bi bi-person-lines-fill"></i> Academic &amp; Contact Details
+                            </h3>
+                        </div>
+                        <div class="p-0">
+                            <div class="table-responsive">
+                                <table class="modern-table table table-borderless align-middle mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <th class="text-muted small text-uppercase" style="width: 30%;">Register No</th>
+                                            <td class="fw-bold text-dark" th:text="${student.registerNumber}">REG001</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-muted small text-uppercase">Full Name</th>
+                                            <td th:text="${student.name}">Student Name</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-muted small text-uppercase">Email</th>
+                                            <td>
+                                                <a th:href="'mailto:' + ${student.email}" class="text-decoration-none" th:text="${student.email}">student@college.edu</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-muted small text-uppercase">Phone</th>
+                                            <td class="text-muted" th:text="${student.phone != null ? student.phone : 'Not provided'}">9876543210</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-muted small text-uppercase">Department</th>
+                                            <td th:text="${student.department}">Computer Science</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-muted small text-uppercase">Academic Year</th>
+                                            <td th:text="'Year ' + ${student.year}">Year 3</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-muted small text-uppercase">Portal Login</th>
+                                            <td>
+                                                <span class="badge bg-light text-secondary border px-2 py-1" th:text="${student.user.username}">username</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Attendance Summary -->
+                <div class="col-lg-5">
+                    <div class="content-card">
+                        <div class="content-card-header">
+                            <h3 class="content-card-title">
+                                <i class="bi bi-bar-chart-fill"></i> Attendance Summary
+                            </h3>
+                        </div>
+                        <div class="p-4 d-flex flex-column justify-content-center h-100">
+                            
+                            <div class="p-4 border rounded-3 bg-light mb-4 shadow-sm flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted fw-medium small">Total Sessions</span>
+                                    <strong class="fs-6 text-dark" th:text="${stats.totalClasses}">0</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted fw-medium small">Classes Present</span>
+                                    <strong class="text-success fs-6" th:text="${stats.presentClasses}">0</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted fw-medium small">On Duty (OD)</span>
+                                    <strong class="text-primary fs-6" th:text="${stats.odClasses}">0</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted fw-medium small">Classes Absent</span>
+                                    <strong class="text-danger fs-6" th:text="${stats.absentClasses}">0</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted fw-medium small">Leave Granted (Excluded)</span>
+                                    <strong class="fs-6" style="color:#7c3aed;" th:text="${stats.leaveGrantedClasses}">0</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted fw-medium small">Leave Denied (Absent)</span>
+                                    <strong class="fs-6" style="color:#ea580c;" th:text="${stats.leaveDeniedClasses}">0</strong>
+                                </div>
+                                <hr class="my-3 border-secondary opacity-25">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-dark text-uppercase small" style="letter-spacing: 0.05em;">Overall %</span>
+                                    <span class="h4 fw-bold mb-0" 
+                                          th:classappend="${stats.lowAttendance ? 'text-danger' : 'text-success'}" 
+                                          th:text="${stats.percentage + '%'}">0%</span>
+                                </div>
+                            </div>
+
+                            <div class="d-grid mt-auto">
+                                <a th:href="@{/student/attendance}" class="btn btn-outline-primary py-2 fw-semibold rounded-3">
+                                    <i class="bi bi-calendar-check me-2"></i> View Detailed History
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Mobile Sidebar Toggle
+        const sidebar = document.getElementById("adminSidebar");
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const overlay = document.getElementById("sidebarOverlay");
+
+        function toggleSidebar() {
+            sidebar.classList.toggle("sidebar-open");
+            overlay.classList.toggle("active");
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", toggleSidebar);
+        }
+        if (overlay) {
+            overlay.addEventListener("click", toggleSidebar);
+        }
+
+        // Live Clock
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const clockEl = document.getElementById("liveClockDisplay");
+            if (clockEl) {
+                clockEl.textContent = timeStr;
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    });
+</script>
+
+</body>
+</html>

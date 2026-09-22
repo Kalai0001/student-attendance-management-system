@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="EduTrack – Modern Student Attendance Management System Admin Dashboard"/>
+    <title>Dashboard – EduTrack</title>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon"/>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+    <!-- Global CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+
+    <style>
+        /* ═════════════════════════════════════════════════════════
+           EDUTRACK MODERN ADMIN DASHBOARD STYLES
+           ═════════════════════════════════════════════════════════ */
+        :root {
+            --edutrack-navy: #0b1528;
+            --edutrack-navy-light: #112038;
+            --edutrack-navy-card: #152744;
+            --edutrack-navy-border: rgba(255, 255, 255, 0.08);
+            --edutrack-blue: #2563eb;
+            --edutrack-blue-hover: #1d4ed8;
+            --edutrack-blue-light: #eff6ff;
+            --edutrack-bg: #f8fafc;
+            --edutrack-card-border: #e2e8f0;
+            --edutrack-text-primary: #0f172a;
+            --edutrack-text-secondary: #64748b;
+            --edutrack-text-muted: #94a3b8;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--edutrack-bg);
+            color: var(--edutrack-text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── App Layout ── */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ── Dark Navy Left Sidebar ── */
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #091322 0%, #0d1b32 60%, #0f1f3a 100%);
+            color: #cbd5e1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--edutrack-navy-border);
+            box-shadow: 4px 0 24px rgba(6, 12, 22, 0.25);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* EduTrack Branding */
+        .admin-sidebar-brand {
+            padding: 1.5rem 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            border-bottom: 1px solid var(--edutrack-navy-border);
+        }
+
+        .brand-icon-wrapper {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.35rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            flex-shrink: 0;
+        }
+
+        .brand-text-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .brand-title {
+            font-size: 1.22rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: #ffffff;
+            line-height: 1.15;
+        }
+
+        .brand-subtitle {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: #94a3b8;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        /* Navigation */
+        .admin-sidebar-nav {
+            flex: 1;
+            padding: 1.25rem 0.85rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.75rem 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.18s ease;
+            position: relative;
+        }
+
+        .admin-nav-item i {
+            font-size: 1.15rem;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+            color: #64748b;
+            transition: color 0.18s ease;
+        }
+
+        .admin-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #f1f5f9;
+            text-decoration: none;
+        }
+
+        .admin-nav-item:hover i {
+            color: #93c5fd;
+        }
+
+        .admin-nav-item.active {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.28) 0%, rgba(37, 99, 235, 0.12) 100%);
+            color: #ffffff;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.28);
+        }
+
+        .admin-nav-item.active i {
+            color: #60a5fa;
+        }
+
+        .admin-nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 25%;
+            bottom: 25%;
+            width: 3.5px;
+            background: #3b82f6;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Sidebar Footer */
+        .admin-sidebar-footer {
+            padding: 1rem 0.85rem 1.25rem;
+            border-top: 1px solid var(--edutrack-navy-border);
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        .admin-sidebar-user-box {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            margin-bottom: 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .user-avatar-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-meta-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-meta-role {
+            font-size: 0.72rem;
+            color: #94a3b8;
+        }
+
+        .admin-btn-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            color: #94a3b8;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .admin-btn-logout:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.25);
+        }
+
+        /* ── Content Wrapper ── */
+        .admin-content-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--edutrack-bg);
+            transition: margin-left 0.25s ease;
+        }
+
+        /* ── Top Bar ── */
+        .admin-topbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--edutrack-card-border);
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-toggle-btn {
+            display: none;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .topbar-page-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topbar-clock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .topbar-clock-badge i {
+            color: #2563eb;
+        }
+
+        /* ── Main Content Container ── */
+        .admin-main-content {
+            padding: 1.75rem 2rem 2.5rem;
+            flex: 1;
+        }
+
+        /* ── Professional Welcome Section ── */
+        .admin-welcome-card {
+            background: #ffffff;
+            border: 1px solid var(--edutrack-card-border);
+            border-radius: 16px;
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 1.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-welcome-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #2563eb 0%, #3b82f6 100%);
+            border-radius: 16px 0 0 16px;
+        }
+
+        .welcome-left {
+            max-width: 680px;
+        }
+
+        .welcome-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 0.76rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+            border: 1px solid #dbeafe;
+        }
+
+        .welcome-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 0.35rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-desc {
+            font-size: 0.88rem;
+            color: #64748b;
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        .welcome-right {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .system-status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 0.45rem 0.95rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #15803d;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #22c55e;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+
+        /* ── Four Summary Cards ── */
+        .summary-card {
+            background: #ffffff;
+            border: 1px solid var(--edutrack-card-border);
+            border-radius: 14px;
+            padding: 1.35rem 1.4rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            height: 100%;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+            border-color: #cbd5e1;
+        }
+
+        .summary-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.35rem;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+        }
+
+        .summary-sub {
+            font-size: 0.77rem;
+            color: #94a3b8;
+            margin-top: 0.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .summary-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+
+        .icon-box-blue   { background: #eff6ff; color: #2563eb; }
+        .icon-box-purple { background: #f5f3ff; color: #7c3aed; }
+        .icon-box-green  { background: #f0fdf4; color: #16a34a; }
+        .icon-box-amber  { background: #fffbeb; color: #d97706; }
+
+        /* ── Section Cards (Main & Quick Actions) ── */
+        .content-card {
+            background: #ffffff;
+            border: 1px solid var(--edutrack-card-border);
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-card-header {
+            padding: 1.15rem 1.4rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .content-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin: 0;
+        }
+
+        .content-card-title i {
+            color: #2563eb;
+            font-size: 1.05rem;
+        }
+
+        .btn-view-all {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #2563eb;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            padding: 0.35rem 0.85rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-view-all:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+
+        /* ── Students Table ── */
+        .table-responsive {
+            margin: 0;
+        }
+
+        .modern-table {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.86rem;
+        }
+
+        .modern-table thead th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid #e2e8f0;
+            border-top: none;
+            white-space: nowrap;
+        }
+
+        .modern-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        .modern-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .modern-table tbody td {
+            padding: 0.9rem 1.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+
+        .modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .student-reg-badge {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: #1e293b;
+            padding: 0.25rem 0.55rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            display: inline-block;
+        }
+
+        .student-name-text {
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.25;
+        }
+
+        .student-email-text {
+            font-size: 0.76rem;
+            color: #94a3b8;
+            margin-top: 0.15rem;
+        }
+
+        /* Badges */
+        .badge-status-active {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+            padding: 0.22rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+
+        .badge-status-pending {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: #fffbeb;
+            color: #d97706;
+            border: 1px solid #fde68a;
+            padding: 0.22rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+
+        /* Empty State */
+        .empty-state-box {
+            padding: 3.5rem 1.5rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .empty-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.25rem;
+        }
+
+        .empty-subtitle {
+            font-size: 0.82rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        /* ── Quick Actions ── */
+        .quick-actions-body {
+            padding: 1.15rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quick-action-item {
+            display: flex;
+            align-items: center;
+            gap: 0.95rem;
+            padding: 0.95rem 1.1rem;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--edutrack-card-border);
+            text-decoration: none;
+            color: #0f172a;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .quick-action-item:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1e40af;
+            text-decoration: none;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+        }
+
+        .qa-icon-wrapper {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .quick-action-item:hover .qa-icon-wrapper {
+            transform: scale(1.05);
+        }
+
+        .qa-icon-blue   { background: #eff6ff; color: #2563eb; }
+        .qa-icon-green  { background: #f0fdf4; color: #16a34a; }
+        .qa-icon-purple { background: #f5f3ff; color: #7c3aed; }
+        .qa-icon-amber  { background: #fffbeb; color: #d97706; }
+
+        .qa-text-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .qa-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.15rem;
+            line-height: 1.25;
+        }
+
+        .quick-action-item:hover .qa-name {
+            color: #1e40af;
+        }
+
+        .qa-desc {
+            font-size: 0.77rem;
+            color: #64748b;
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .qa-arrow {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            transition: transform 0.18s ease, color 0.18s ease;
+        }
+
+        .quick-action-item:hover .qa-arrow {
+            transform: translateX(2px);
+            color: #2563eb;
+        }
+
+        /* ── Mobile Sidebar Overlay ── */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 1035;
+            transition: opacity 0.25s ease;
+        }
+
+        /* ── Responsive Queries ── */
+        @media (max-width: 991.98px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .admin-sidebar.sidebar-open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .admin-content-wrapper {
+                margin-left: 0;
+            }
+
+            .sidebar-toggle-btn {
+                display: inline-flex;
+            }
+
+            .admin-topbar {
+                padding: 0.85rem 1.25rem;
+            }
+
+            .admin-main-content {
+                padding: 1.25rem 1.25rem 2rem;
+            }
+
+            .admin-welcome-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1.35rem 1.35rem;
+            }
+
+            .welcome-right {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .admin-main-content {
+                padding: 1rem 0.85rem 1.5rem;
+            }
+
+            .summary-card {
+                padding: 1.15rem 1.1rem;
+            }
+
+            .summary-value {
+                font-size: 1.65rem;
+            }
+
+            .welcome-title {
+                font-size: 1.25rem;
+            }
+
+            .topbar-clock-badge {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN APPLICATION LAYOUT
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+
+    <!-- ───────────────────────────────────────────────
+         DARK NAVY LEFT SIDEBAR WITH EDUTRACK BRANDING
+         ─────────────────────────────────────────────── -->
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Main Navigation">
+
+        <!-- EduTrack Branding -->
+        <a class="admin-sidebar-brand" th:href="@{/admin/dashboard}" aria-label="EduTrack Home">
+            <div class="brand-icon-wrapper">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <div class="brand-text-wrapper">
+                <span class="brand-title">EduTrack</span>
+                <span class="brand-subtitle">Attendance System</span>
+            </div>
+        </a>
+
+        <!-- Simple Clean Navigation: Dashboard, Students, Attendance, Reports, Settings -->
+        <nav class="admin-sidebar-nav" aria-label="Admin Navigation Links">
+            <!-- 1. Dashboard -->
+            <a class="admin-nav-item active" th:href="@{/admin/dashboard}" id="nav-dashboard">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- 2. Students -->
+            <a class="admin-nav-item" th:href="@{/admin/students}" id="nav-students">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
+            </a>
+
+            <!-- 3. Attendance -->
+            <a class="admin-nav-item" th:href="@{/admin/attendance/history}" id="nav-attendance">
+                <i class="bi bi-calendar-check-fill"></i>
+                <span>Attendance</span>
+            </a>
+
+            <!-- 4. Reports -->
+            <a class="admin-nav-item" th:href="@{/admin/attendance/report}" id="nav-reports">
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports</span>
+            </a>
+
+            <!-- 5. Settings -->
+            <a class="admin-nav-item" href="#settingsModal" data-bs-toggle="modal" id="nav-settings">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer & User Profile -->
+        <div class="admin-sidebar-footer">
+            <div class="admin-sidebar-user-box">
+                <div class="user-avatar-circle">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div class="user-meta" style="min-width:0; flex:1;">
+                    <div class="user-meta-name" sec:authentication="name">Administrator</div>
+                    <div class="user-meta-role">System Admin</div>
+                </div>
+            </div>
+
+            <!-- Sign Out Form -->
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="admin-btn-logout" id="btn-sidebar-signout" aria-label="Sign out">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sign Out</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- ───────────────────────────────────────────────
+         CONTENT WRAPPER (LIGHT BACKGROUND)
+         ─────────────────────────────────────────────── -->
+    <div class="admin-content-wrapper">
+
+        <!-- Top Bar -->
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Toggle navigation menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="topbar-page-title">
+                    <i class="bi bi-speedometer2 text-primary"></i>
+                    <span>Dashboard</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-clock-badge">
+                    <i class="bi bi-clock"></i>
+                    <span id="liveClockDisplay">--:--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace Area -->
+        <main class="admin-main-content">
+
+            <!-- Flash Alerts (if present) -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show d-flex align-items-center mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <div th:text="${successMessage}">Operation successful.</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show d-flex align-items-center mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <div th:text="${errorMessage}">An error occurred.</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- ── Professional Welcome Section ── -->
+            <section class="admin-welcome-card" aria-label="Welcome banner">
+                <div class="welcome-left">
+                    <div class="welcome-badge">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Institutional Attendance Portal</span>
+                    </div>
+                    <h1 class="welcome-title">Welcome, Administrator</h1>
+                    <p class="welcome-desc">
+                        Here's an overview of student attendance statistics, registered class sessions, and recent admissions.
+                    </p>
+                </div>
+                <div class="welcome-right">
+                    <div class="system-status-indicator" title="Connected to MySQL Database">
+                        <span class="pulse-dot"></span>
+                        <span>System Active</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Four Simple Summary Cards ── -->
+            <section class="row g-3 mb-4" aria-label="Dashboard metrics">
+                <!-- 1. Total Students -->
+                <div class="col-sm-6 col-xl-3">
+                    <div class="summary-card" id="card-total-students">
+                        <div class="summary-info">
+                            <div class="summary-label">Total Students</div>
+                            <div class="summary-value" th:text="${totalStudents != null ? totalStudents : 0}">0</div>
+                            <div class="summary-sub">Registered students</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-blue">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Total Class Sessions -->
+                <div class="col-sm-6 col-xl-3">
+                    <div class="summary-card" id="card-total-classes">
+                        <div class="summary-info">
+                            <div class="summary-label">Total Class Sessions</div>
+                            <div class="summary-value" th:text="${totalClasses != null ? totalClasses : 0}">0</div>
+                            <div class="summary-sub">Recorded sessions</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-purple">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Today's Present -->
+                <div class="col-sm-6 col-xl-3">
+                    <div class="summary-card" id="card-today-present">
+                        <div class="summary-info">
+                            <div class="summary-label">Today's Present</div>
+                            <div class="summary-value" th:text="${todayPresent != null ? todayPresent : 0}">0</div>
+                            <div class="summary-sub">Students present today</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-green">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Today's Attendance % -->
+                <div class="col-sm-6 col-xl-3">
+                    <div class="summary-card" id="card-today-percentage">
+                        <div class="summary-info">
+                            <div class="summary-label">Today's Attendance %</div>
+                            <div class="summary-value">
+                                <span th:text="${todayPercentage != null ? todayPercentage : 0}">0</span>%
+                            </div>
+                            <div class="summary-sub">Overall percentage</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-amber">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Main Section: Recent Student Registrations & Right Section: Quick Actions ── -->
+            <div class="row g-4 align-items-stretch">
+
+                <!-- Main Section: Recent Student Registrations (col-lg-8) -->
+                <div class="col-lg-8">
+                    <div class="content-card" id="section-recent-students">
+                        <div class="content-card-header">
+                            <h2 class="content-card-title">
+                                <i class="bi bi-person-lines-fill"></i>
+                                <span>Recent Student Registrations</span>
+                            </h2>
+                            <a th:href="@{/admin/students}" class="btn-view-all" id="btn-view-all-students">
+                                <span>View All</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <div class="table-responsive flex-grow-1">
+                            <table class="modern-table" aria-label="Recent Students Table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 22%;">Reg. No</th>
+                                        <th scope="col" style="width: 32%;">Student Name</th>
+                                        <th scope="col" style="width: 20%;">Department</th>
+                                        <th scope="col" style="width: 14%;">Year</th>
+                                        <th scope="col" style="width: 12%;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Empty state if no data available in MySQL -->
+                                    <tr th:if="${recentStudents == null or recentStudents.isEmpty()}">
+                                        <td colspan="5" class="empty-state-box">
+                                            <i class="bi bi-inbox empty-icon"></i>
+                                            <div class="empty-title">No data available</div>
+                                            <p class="empty-subtitle">No student registrations found in database.</p>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Populated dynamically with real MySQL data -->
+                                    <tr th:each="student : ${recentStudents}">
+                                        <td>
+                                            <span class="student-reg-badge"
+                                                  th:text="${student.registerNumber != null ? student.registerNumber : '—'}">—</span>
+                                        </td>
+                                        <td>
+                                            <div class="student-name-text"
+                                                 th:text="${student.name != null ? student.name : '—'}">—</div>
+                                            <div class="student-email-text"
+                                                 th:text="${student.email != null ? student.email : ''}"></div>
+                                        </td>
+                                        <td>
+                                            <span th:text="${student.department != null and !student.department.isEmpty() ? student.department : 'General'}">—</span>
+                                        </td>
+                                        <td>
+                                            <span th:text="'Year ' + ${student.year}">—</span>
+                                            <span th:if="${student.section != null and !student.section.isEmpty()}"
+                                                  th:text="' (' + ${student.section} + ')'" class="text-muted small"></span>
+                                        </td>
+                                        <td>
+                                            <!-- Active status -->
+                                            <span th:if="${student.user != null and student.user.enabled}" class="badge-status-active">
+                                                <i class="bi bi-check-circle-fill" style="font-size:0.65rem;"></i> Active
+                                            </span>
+                                            <!-- Pending status -->
+                                            <span th:if="${student.user != null and !student.user.enabled}" class="badge-status-pending">
+                                                <i class="bi bi-clock-fill" style="font-size:0.65rem;"></i> Pending
+                                            </span>
+                                            <!-- Fallback when user account is null -->
+                                            <span th:if="${student.user == null}" class="badge-status-pending">
+                                                Registered
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Quick Actions (col-lg-4) -->
+                <div class="col-lg-4">
+                    <div class="content-card" id="section-quick-actions">
+                        <div class="content-card-header">
+                            <h2 class="content-card-title">
+                                <i class="bi bi-lightning-charge-fill"></i>
+                                <span>Quick Actions</span>
+                            </h2>
+                        </div>
+                        <div class="quick-actions-body flex-grow-1">
+
+                            <!-- Action 1: Add Student -->
+                            <a th:href="@{/admin/students/new}" class="quick-action-item" id="qa-add-student">
+                                <div class="qa-icon-wrapper qa-icon-blue">
+                                    <i class="bi bi-person-plus-fill"></i>
+                                </div>
+                                <div class="qa-text-wrapper">
+                                    <div class="qa-name">Add Student</div>
+                                    <p class="qa-desc">Register a new student profile</p>
+                                </div>
+                                <i class="bi bi-chevron-right qa-arrow"></i>
+                            </a>
+
+                            <!-- Action 2: Mark Attendance -->
+                            <a th:href="@{/admin/attendance/mark}" class="quick-action-item" id="qa-mark-attendance">
+                                <div class="qa-icon-wrapper qa-icon-green">
+                                    <i class="bi bi-calendar-check-fill"></i>
+                                </div>
+                                <div class="qa-text-wrapper">
+                                    <div class="qa-name">Mark Attendance</div>
+                                    <p class="qa-desc">Record attendance for today's session</p>
+                                </div>
+                                <i class="bi bi-chevron-right qa-arrow"></i>
+                            </a>
+
+                            <!-- Action 3: View Attendance -->
+                            <a th:href="@{/admin/attendance/history}" class="quick-action-item" id="qa-view-attendance">
+                                <div class="qa-icon-wrapper qa-icon-purple">
+                                    <i class="bi bi-eye-fill"></i>
+                                </div>
+                                <div class="qa-text-wrapper">
+                                    <div class="qa-name">View Attendance</div>
+                                    <p class="qa-desc">Browse & search attendance records</p>
+                                </div>
+                                <i class="bi bi-chevron-right qa-arrow"></i>
+                            </a>
+
+                            <!-- Action 4: Generate Reports -->
+                            <a th:href="@{/admin/attendance/report}" class="quick-action-item" id="qa-generate-reports">
+                                <div class="qa-icon-wrapper qa-icon-amber">
+                                    <i class="bi bi-bar-chart-line-fill"></i>
+                                </div>
+                                <div class="qa-text-wrapper">
+                                    <div class="qa-name">Generate Reports</div>
+                                    <p class="qa-desc">View attendance percentages & analytics</p>
+                                </div>
+                                <i class="bi bi-chevron-right qa-arrow"></i>
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /row -->
+        </main>
+    </div><!-- /admin-content-wrapper -->
+
+</div><!-- /admin-layout -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SETTINGS MODAL (FOR NAVIGATION LINK)
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px; border:1px solid #e2e8f0; overflow:hidden;">
+            <div class="modal-header" style="background:#f8fafc; border-bottom:1px solid #e2e8f0; padding:1.2rem 1.5rem;">
+                <h5 class="modal-title d-flex align-items-center gap-2" id="settingsModalLabel" style="font-weight:700; font-size:1.05rem;">
+                    <i class="bi bi-gear-fill text-primary"></i>
+                    System Settings
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding:1.5rem;">
+                <div class="d-flex flex-column gap-3">
+                    <div class="p-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-semibold text-dark" style="font-size:0.88rem;">Application</span>
+                            <span class="badge bg-primary px-2 py-1">EduTrack v1.0.0</span>
+                        </div>
+                        <p class="text-muted small mb-0">College Student Attendance Management System</p>
+                    </div>
+
+                    <div class="p-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-semibold text-dark" style="font-size:0.88rem;">Database Status</span>
+                            <span class="badge bg-success px-2 py-1">MySQL Connected</span>
+                        </div>
+                        <p class="text-muted small mb-0">Real-time data synchronization enabled</p>
+                    </div>
+
+                    <div class="p-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-semibold text-dark" style="font-size:0.88rem;">Attendance Shortage Alert</span>
+                            <span class="badge bg-warning text-dark px-2 py-1">&lt; 75% Threshold</span>
+                        </div>
+                        <p class="text-muted small mb-0">Students below 75% are flagged for review</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:1rem 1.5rem;">
+                <button type="button" class="btn btn-secondary btn-sm px-3 rounded-3" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Scripts ── -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Live clock display in top bar
+    function updateClock() {
+        const now = new Date();
+        const clockEl = document.getElementById('liveClockDisplay');
+        if (clockEl) {
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+            clockEl.textContent = dateStr + ' • ' + timeStr;
+        }
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Mobile sidebar toggle handler
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const adminSidebar  = document.getElementById('adminSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    function openSidebar() {
+        if (adminSidebar) adminSidebar.classList.add('sidebar-open');
+        if (sidebarOverlay) sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        if (adminSidebar) adminSidebar.classList.remove('sidebar-open');
+        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+    // Close mobile sidebar on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="EduTrack – Student Complete Attendance Logs"/>
+    <title>My Attendance – EduTrack</title>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon"/>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+    <!-- Global CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+
+    <style>
+        :root {
+            --edutrack-navy: #0b1528;
+            --edutrack-navy-light: #112038;
+            --edutrack-navy-border: rgba(255, 255, 255, 0.08);
+            --edutrack-blue: #2563eb;
+            --edutrack-bg: #f8fafc;
+            --edutrack-card-border: #e2e8f0;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--edutrack-bg);
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #091322 0%, #0d1b32 60%, #0f1f3a 100%);
+            color: #cbd5e1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--edutrack-navy-border);
+            box-shadow: 4px 0 24px rgba(6, 12, 22, 0.25);
+            transition: transform 0.25s ease;
+        }
+
+        .admin-sidebar-brand {
+            padding: 1.5rem 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            border-bottom: 1px solid var(--edutrack-navy-border);
+        }
+
+        .brand-icon-wrapper {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.35rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-size: 1.22rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: #ffffff;
+            line-height: 1.15;
+        }
+
+        .brand-subtitle {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: #94a3b8;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .admin-sidebar-nav {
+            flex: 1;
+            padding: 1.25rem 0.85rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.75rem 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.18s ease;
+            position: relative;
+        }
+
+        .admin-nav-item i {
+            font-size: 1.15rem;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+            color: #64748b;
+        }
+
+        .admin-nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #f1f5f9;
+            text-decoration: none;
+        }
+
+        .admin-nav-item.active {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.28) 0%, rgba(37, 99, 235, 0.12) 100%);
+            color: #ffffff;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.28);
+        }
+
+        .admin-nav-item.active i {
+            color: #60a5fa;
+        }
+
+        .admin-sidebar-footer {
+            padding: 1rem 0.85rem 1.25rem;
+            border-top: 1px solid var(--edutrack-navy-border);
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        .admin-sidebar-user-box {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            margin-bottom: 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .user-avatar-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .admin-btn-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            color: #94a3b8;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .admin-btn-logout:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+
+        .admin-content-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--edutrack-bg);
+        }
+
+        .admin-topbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--edutrack-card-border);
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .sidebar-toggle-btn {
+            display: none;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        .topbar-clock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .admin-main-content {
+            padding: 1.75rem 2rem 2.5rem;
+            flex: 1;
+        }
+
+        .summary-card {
+            background: #ffffff;
+            border: 1px solid var(--edutrack-card-border);
+            border-radius: 14px;
+            padding: 1.15rem 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            height: 100%;
+        }
+
+        .summary-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.35rem;
+        }
+
+        .summary-value {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+        }
+
+        .summary-sub {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        .summary-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .icon-box-blue   { background: #eff6ff; color: #2563eb; }
+        .icon-box-green  { background: #f0fdf4; color: #16a34a; }
+        .icon-box-red    { background: #fef2f2; color: #dc2626; }
+        .icon-box-amber  { background: #fffbeb; color: #d97706; }
+        .icon-box-purple { background: #f5f3ff; color: #7c3aed; }
+        .icon-box-orange { background: #fff7ed; color: #ea580c; }
+
+        .content-card {
+            background: #ffffff;
+            border: 1px solid var(--edutrack-card-border);
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+
+        .modern-table {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.855rem;
+        }
+
+        .modern-table thead th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.85rem 1.15rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modern-table tbody td {
+            padding: 0.8rem 1.15rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.22rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .badge-status-present       { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-status-absent        { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .badge-status-od            { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .badge-status-leave-granted { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+        .badge-status-leave-denied  { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            z-index: 1035;
+        }
+
+        @media (max-width: 991.98px) {
+            .admin-sidebar { transform: translateX(-100%); }
+            .admin-sidebar.sidebar-open { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; }
+            .admin-content-wrapper { margin-left: 0; }
+            .sidebar-toggle-btn { display: inline-flex; }
+            .admin-topbar { padding: 0.85rem 1.25rem; }
+            .admin-main-content { padding: 1.25rem 1.25rem 2rem; }
+        }
+
+        @media print {
+            .admin-sidebar, .admin-topbar, .btn-print-hide { display: none !important; }
+            .admin-content-wrapper { margin-left: 0 !important; }
+            .content-card { border: none !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-layout">
+
+    <!-- ── Sidebar ── -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <a class="admin-sidebar-brand" th:href="@{/student/dashboard}">
+            <div class="brand-icon-wrapper"><i class="bi bi-mortarboard-fill"></i></div>
+            <div>
+                <div class="brand-title">EduTrack</div>
+                <div class="brand-subtitle">Student Portal</div>
+            </div>
+        </a>
+
+        <nav class="admin-sidebar-nav">
+            <a class="admin-nav-item" th:href="@{/student/dashboard}" id="nav-dashboard">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <a class="admin-nav-item active" th:href="@{/student/attendance}" id="nav-attendance">
+                <i class="bi bi-calendar-check-fill"></i>
+                <span>My Attendance</span>
+            </a>
+            <a class="admin-nav-item" th:href="@{/student/profile}" id="nav-profile">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>My Profile</span>
+            </a>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+            <div class="admin-sidebar-user-box">
+                <div class="user-avatar-circle"><i class="bi bi-person-fill"></i></div>
+                <div style="min-width:0; flex:1;">
+                    <div style="font-size:0.85rem; font-weight:600; color:#f1f5f9; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" 
+                         th:text="${student.name}">Student Name</div>
+                    <div style="font-size:0.72rem; color:#94a3b8;" th:text="${student.registerNumber}">REG001</div>
+                </div>
+            </div>
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="admin-btn-logout" id="btn-sidebar-signout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sign Out</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- ── Content Wrapper ── -->
+    <div class="admin-content-wrapper">
+
+        <header class="admin-topbar">
+            <div class="d-flex align-items-center gap-2">
+                <button class="sidebar-toggle-btn" id="sidebarToggle"><i class="bi bi-list"></i></button>
+                <div class="fw-semibold text-dark"><i class="bi bi-calendar-check-fill text-primary me-2"></i>My Attendance History</div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="topbar-clock-badge">
+                    <i class="bi bi-clock"></i>
+                    <span id="liveClockDisplay">--:--</span>
+                </div>
+                <button onclick="window.print()" class="btn btn-outline-secondary btn-sm px-3 rounded-3">
+                    <i class="bi bi-printer me-1"></i> Print Log
+                </button>
+            </div>
+        </header>
+
+        <main class="admin-main-content">
+
+            <!-- Student Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                <div>
+                    <h2 class="fw-bold text-dark mb-1" style="font-size: 1.45rem; letter-spacing: -0.02em;">Personal Class Session Log</h2>
+                    <p class="text-muted mb-0 small">
+                        Attendance records for <strong th:text="${student.name}">Student</strong> 
+                        (<span th:text="${student.registerNumber}">REG001</span>) &bull; <span th:text="${student.department}">CSE</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Shortage Alert Warning Banner (if <75%) -->
+            <div th:if="${stats.lowAttendance}" class="alert alert-danger border-danger d-flex align-items-center mb-4 p-3 shadow-sm rounded-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill fs-3 text-danger me-3 flex-shrink-0"></i>
+                <div>
+                    <h6 class="alert-heading fw-bold mb-1">Attendance Shortage Alert (&lt; 75%)</h6>
+                    <p class="mb-0 small">
+                        Your cumulative attendance is <strong th:text="${stats.percentage + '%'}">0%</strong>, which is below the minimum mandatory institutional requirement of <strong>75%</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ── Required Student Metrics: Total, Present, Absent, OD, Leave Granted, Leave Denied, Attendance % ── -->
+            <section class="row g-3 mb-4">
+                <!-- 1. Total Classes -->
+                <div class="col-6 col-md-4 col-xl">
+                    <div class="summary-card">
+                        <div>
+                            <div class="summary-label">Total Classes</div>
+                            <div class="summary-value" th:text="${stats.totalClasses != null ? stats.totalClasses : 0}">0</div>
+                            <div class="summary-sub">Conducted</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-blue"><i class="bi bi-book-half"></i></div>
+                    </div>
+                </div>
+
+                <!-- 2. Present -->
+                <div class="col-6 col-md-4 col-xl">
+                    <div class="summary-card">
+                        <div>
+                            <div class="summary-label">Present</div>
+                            <div class="summary-value text-success" th:text="${stats.presentClasses != null ? stats.presentClasses : 0}">0</div>
+                            <div class="summary-sub">Attended</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-green"><i class="bi bi-check-circle-fill"></i></div>
+                    </div>
+                </div>
+
+                <!-- 3. Absent -->
+                <div class="col-6 col-md-4 col-xl">
+                    <div class="summary-card">
+                        <div>
+                            <div class="summary-label">Absent</div>
+                            <div class="summary-value text-danger" th:text="${stats.absentClasses != null ? stats.absentClasses : 0}">0</div>
+                            <div class="summary-sub">Missed</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-red"><i class="bi bi-x-circle-fill"></i></div>
+                    </div>
+                </div>
+
+                <!-- 4. On Duty (OD) -->
+                <div class="col-6 col-md-4 col-xl">
+                    <div class="summary-card">
+                        <div>
+                            <div class="summary-label">OD (On Duty)</div>
+                            <div class="summary-value text-primary" th:text="${stats.odClasses != null ? stats.odClasses : 0}">0</div>
+                            <div class="summary-sub">Counted as present</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-blue"><i class="bi bi-star-fill"></i></div>
+                    </div>
+                </div>
+
+                <!-- 5. Leave Granted -->
+                <div class="col-6 col-md-4 col-xl">
+                    <div class="summary-card">
+                        <div>
+                            <div class="summary-label">Leave Granted</div>
+                            <div class="summary-value" style="color:#7c3aed;" th:text="${stats.leaveGrantedClasses != null ? stats.leaveGrantedClasses : 0}">0</div>
+                            <div class="summary-sub">Excluded from %</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-purple"><i class="bi bi-check2-circle"></i></div>
+                    </div>
+                </div>
+
+                <!-- 6. Leave Denied -->
+                <div class="col-6 col-md-4 col-xl">
+                    <div class="summary-card">
+                        <div>
+                            <div class="summary-label">Leave Denied</div>
+                            <div class="summary-value" style="color:#ea580c;" th:text="${stats.leaveDeniedClasses != null ? stats.leaveDeniedClasses : 0}">0</div>
+                            <div class="summary-sub">Treated as absent</div>
+                        </div>
+                        <div class="summary-icon-box icon-box-orange"><i class="bi bi-slash-circle"></i></div>
+                    </div>
+                </div>
+
+                <!-- 7. Attendance % -->
+                <div class="col-12 col-md-4 col-xl">
+                    <div class="summary-card">
+                        <div>
+                            <div class="summary-label">Attendance %</div>
+                            <div class="summary-value" th:classappend="${stats.lowAttendance ? 'text-danger' : 'text-success'}">
+                                <span th:text="${stats.percentage != null ? stats.percentage : 0}">0</span>%
+                            </div>
+                            <div class="summary-sub">
+                                <span th:if="${!stats.lowAttendance}" class="text-success fw-bold">Eligible (&ge;75%)</span>
+                                <span th:if="${stats.lowAttendance}" class="text-danger fw-bold">Shortage (&lt;75%)</span>
+                            </div>
+                        </div>
+                        <div class="summary-icon-box icon-box-amber"><i class="bi bi-pie-chart-fill"></i></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Top Period Selector Tabs (Period 1 to Period 8) ── -->
+            <section class="period-nav-card" id="studentPeriodSelectorCard">
+                <div class="period-nav-header">
+                    <div>
+                        <h2 class="period-nav-title">
+                            <i class="bi bi-clock-history text-primary fs-5"></i>
+                            Period-Wise Attendance Filter
+                        </h2>
+                        <span class="period-nav-subtitle">Click a period tab to view ONLY your attendance records for that class period</span>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="btnStudentAllPeriods" onclick="filterStudentPeriod('all')">
+                            <i class="bi bi-grid-fill me-1"></i> All Periods View
+                        </button>
+                    </div>
+                </div>
+
+                <div class="period-nav-scroll-container">
+                    <div class="period-tabs-grid" role="tablist" id="studentPeriodTabsGrid">
+                        <!-- Period 1 -->
+                        <button type="button" class="period-tab-btn" data-period="1" id="stdTab1" onclick="filterStudentPeriod(1)">
+                            <span class="tab-badge-num">P1</span>
+                            <span class="tab-period-title">Period 1</span>
+                            <span class="tab-period-time">09:00 - 09:50</span>
+                            <span class="tab-count-pill" id="stdBadgeP1">0 logs</span>
+                        </button>
+
+                        <!-- Period 2 -->
+                        <button type="button" class="period-tab-btn" data-period="2" id="stdTab2" onclick="filterStudentPeriod(2)">
+                            <span class="tab-badge-num">P2</span>
+                            <span class="tab-period-title">Period 2</span>
+                            <span class="tab-period-time">09:50 - 10:40</span>
+                            <span class="tab-count-pill" id="stdBadgeP2">0 logs</span>
+                        </button>
+
+                        <!-- Period 3 -->
+                        <button type="button" class="period-tab-btn" data-period="3" id="stdTab3" onclick="filterStudentPeriod(3)">
+                            <span class="tab-badge-num">P3</span>
+                            <span class="tab-period-title">Period 3</span>
+                            <span class="tab-period-time">10:55 - 11:45</span>
+                            <span class="tab-count-pill" id="stdBadgeP3">0 logs</span>
+                        </button>
+
+                        <!-- Period 4 -->
+                        <button type="button" class="period-tab-btn" data-period="4" id="stdTab4" onclick="filterStudentPeriod(4)">
+                            <span class="tab-badge-num">P4</span>
+                            <span class="tab-period-title">Period 4</span>
+                            <span class="tab-period-time">11:45 - 12:35</span>
+                            <span class="tab-count-pill" id="stdBadgeP4">0 logs</span>
+                        </button>
+
+                        <!-- Period 5 -->
+                        <button type="button" class="period-tab-btn" data-period="5" id="stdTab5" onclick="filterStudentPeriod(5)">
+                            <span class="tab-badge-num">P5</span>
+                            <span class="tab-period-title">Period 5</span>
+                            <span class="tab-period-time">01:25 - 02:15</span>
+                            <span class="tab-count-pill" id="stdBadgeP5">0 logs</span>
+                        </button>
+
+                        <!-- Period 6 -->
+                        <button type="button" class="period-tab-btn" data-period="6" id="stdTab6" onclick="filterStudentPeriod(6)">
+                            <span class="tab-badge-num">P6</span>
+                            <span class="tab-period-title">Period 6</span>
+                            <span class="tab-period-time">02:15 - 03:05</span>
+                            <span class="tab-count-pill" id="stdBadgeP6">0 logs</span>
+                        </button>
+
+                        <!-- Period 7 -->
+                        <button type="button" class="period-tab-btn" data-period="7" id="stdTab7" onclick="filterStudentPeriod(7)">
+                            <span class="tab-badge-num">P7</span>
+                            <span class="tab-period-title">Period 7</span>
+                            <span class="tab-period-time">03:15 - 04:05</span>
+                            <span class="tab-count-pill" id="stdBadgeP7">0 logs</span>
+                        </button>
+
+                        <!-- Period 8 -->
+                        <button type="button" class="period-tab-btn" data-period="8" id="stdTab8" onclick="filterStudentPeriod(8)">
+                            <span class="tab-badge-num">P8</span>
+                            <span class="tab-period-title">Period 8</span>
+                            <span class="tab-period-time">04:05 - 04:55</span>
+                            <span class="tab-count-pill" id="stdBadgeP8">0 logs</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Attendance History Table: Date | Period | Subject | Status ── -->
+            <div class="content-card">
+                <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-calendar3 text-primary me-2"></i>
+                        Class Session Log
+                    </h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary px-2 py-1" id="stdActivePeriodBadge" style="font-size:0.75rem;">
+                            Period 1
+                        </span>
+                        <span class="badge bg-light text-secondary border px-2 py-1 rounded-pill">
+                            <strong id="stdTotalSessionsDisplay" th:text="${#lists.size(history)}">0</strong> Records
+                        </span>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(history)}" class="p-5 text-center text-muted" id="stdEmptyDbBox">
+                    <i class="bi bi-folder2-open fs-1 d-block mb-2 text-secondary"></i>
+                    <h5>No attendance data available</h5>
+                    <p class="small">Your attendance records will appear here once marked by faculty.</p>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(history)}" class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">#</th>
+                                <th style="width: 22%;">Date</th>
+                                <th style="width: 18%;">Period</th>
+                                <th style="width: 36%;">Subject</th>
+                                <th style="width: 20%;" class="text-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentAttendanceTbody">
+                            <!-- Dynamic Period Empty Row -->
+                            <tr id="stdPeriodEmptyRow" style="display: none;">
+                                <td colspan="5" class="p-5 text-center text-muted">
+                                    <i class="bi bi-calendar2-x fs-2 d-block mb-2 text-secondary"></i>
+                                    <h6 class="fw-bold text-dark" id="stdEmptyTitle">No records for Period 1</h6>
+                                    <p class="small text-muted mb-0">You have no attendance records logged for this class period.</p>
+                                </td>
+                            </tr>
+
+                            <tr th:each="att, stat : ${history}" 
+                                class="std-attendance-row"
+                                th:attr="data-period=${att.period}, data-status=${att.status != null ? att.status.name() : ''}">
+                                <td class="row-num" th:text="${stat.count}">1</td>
+                                <td>
+                                    <strong class="text-dark" th:text="${att.date}">2026-09-21</strong>
+                                    <span class="badge bg-light text-secondary border ms-1 font-monospace" style="font-size:0.68rem;"
+                                          th:text="${att.date != null ? att.date.dayOfWeek : ''}">MONDAY</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary font-monospace fw-bold" 
+                                          th:text="'Period ' + ${att.period}">Period 1</span>
+                                </td>
+                                <td>
+                                    <strong class="text-dark" th:text="${att.subject}">Data Structures</strong>
+                                </td>
+                                <td class="text-end">
+                                    <span th:if="${att.status != null and att.status.name() == 'PRESENT'}" class="badge-status badge-status-present">
+                                        <i class="bi bi-check-circle-fill"></i> PRESENT
+                                    </span>
+                                    <span th:if="${att.status != null and att.status.name() == 'ABSENT'}" class="badge-status badge-status-absent">
+                                        <i class="bi bi-x-circle-fill"></i> ABSENT
+                                    </span>
+                                    <span th:if="${att.status != null and att.status.name() == 'OD'}" class="badge-status badge-status-od">
+                                        <i class="bi bi-star-fill"></i> OD (ON DUTY)
+                                    </span>
+                                    <span th:if="${att.status != null and att.status.name() == 'LEAVE_GRANTED'}" class="badge-status badge-status-leave-granted">
+                                        <i class="bi bi-check2-circle"></i> LEAVE GRANTED
+                                    </span>
+                                    <span th:if="${att.status != null and att.status.name() == 'LEAVE_DENIED'}" class="badge-status badge-status-leave-denied">
+                                        <i class="bi bi-slash-circle"></i> LEAVE DENIED
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
+<script>
+    function updateClock() {
+        const now = new Date();
+        const clockEl = document.getElementById('liveClockDisplay');
+        if (clockEl) {
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+            clockEl.textContent = dateStr + ' • ' + timeStr;
+        }
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    const sidebarToggle  = document.getElementById('sidebarToggle');
+    const adminSidebar   = document.getElementById('adminSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    function openSidebar() {
+        if (adminSidebar) adminSidebar.classList.add('sidebar-open');
+        if (sidebarOverlay) sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        if (adminSidebar) adminSidebar.classList.remove('sidebar-open');
+        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+    // =========================================================================
+    // STUDENT PERIOD TAB FILTERING
+    // =========================================================================
+    function calcStudentPeriodCounts() {
+        const rows = document.querySelectorAll('.std-attendance-row');
+        const periodCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 };
+
+        rows.forEach(r => {
+            const p = parseInt(r.getAttribute('data-period'));
+            if (p >= 1 && p <= 8) {
+                periodCounts[p] = (periodCounts[p] || 0) + 1;
+            }
+        });
+
+        for (let p = 1; p <= 8; p++) {
+            const badgeEl = document.getElementById('stdBadgeP' + p);
+            if (badgeEl) {
+                badgeEl.textContent = (periodCounts[p] || 0) + ' logs';
+            }
+        }
+    }
+
+    function filterStudentPeriod(period) {
+        // 1. Update active tab
+        document.querySelectorAll('#studentPeriodTabsGrid .period-tab-btn').forEach(btn => {
+            if (String(btn.getAttribute('data-period')) === String(period)) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        const allBtn = document.getElementById('btnStudentAllPeriods');
+        if (allBtn) {
+            if (period === 'all') {
+                allBtn.classList.remove('btn-outline-secondary');
+                allBtn.classList.add('btn-secondary', 'active');
+            } else {
+                allBtn.classList.remove('btn-secondary', 'active');
+                allBtn.classList.add('btn-outline-secondary');
+            }
+        }
+
+        // 2. Filter rows
+        const rows = document.querySelectorAll('.std-attendance-row');
+        let visibleCount = 0;
+        let counter = 1;
+
+        rows.forEach(r => {
+            const rowP = r.getAttribute('data-period');
+            if (period === 'all' || String(rowP) === String(period)) {
+                r.style.display = '';
+                const numCell = r.querySelector('.row-num');
+                if (numCell) numCell.textContent = counter++;
+                visibleCount++;
+            } else {
+                r.style.display = 'none';
+            }
+        });
+
+        // 3. Dynamic empty row
+        const emptyRow = document.getElementById('stdPeriodEmptyRow');
+        if (emptyRow) {
+            if (visibleCount === 0) {
+                emptyRow.style.display = '';
+                const title = document.getElementById('stdEmptyTitle');
+                if (title) title.textContent = 'No records logged for Period ' + period;
+            } else {
+                emptyRow.style.display = 'none';
+            }
+        }
+
+        // 4. Header Badges
+        const totalDisplay = document.getElementById('stdTotalSessionsDisplay');
+        if (totalDisplay) totalDisplay.textContent = visibleCount;
+
+        const badge = document.getElementById('stdActivePeriodBadge');
+        if (badge) {
+            if (period === 'all') {
+                badge.textContent = 'All Periods (1-8)';
+                badge.className = 'badge bg-secondary px-2 py-1';
+            } else {
+                badge.textContent = 'Period ' + period;
+                badge.className = 'badge bg-primary px-2 py-1';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        calcStudentPeriodCounts();
+        filterStudentPeriod(1);
+    });
+</script>
+
+</body>
+</html>
